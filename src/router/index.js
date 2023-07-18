@@ -38,6 +38,12 @@ const routes = [
                 component: () => import('../views/Password')
             },
             {
+                path: 'accountInfo',
+                name: 'AccountInfo',
+                meta: {headerName: '账号信息', isAuth: true},
+                component: () => import('../views/AccountInfo')
+            },
+            {
                 path: 'file',
                 name: 'File',
                 meta: {headerName: '所有文件', isAuth: true},
