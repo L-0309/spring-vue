@@ -91,7 +91,7 @@
         </span>
       </el-tree>
       <div slot="footer" class="dialog-footer">
-        <el-button icon="el-icon-close" type="info" @click="menuDialogVis = false; checkStrictly = true">取 消</el-button>
+        <el-button icon="el-icon-close" type="info" @click="cancel">取 消</el-button>
         <el-button icon="el-icon-circle-check" type="primary" @click="saveRoleMenu">确 定</el-button>
       </div>
     </el-dialog>
@@ -136,6 +136,10 @@ export default {
     }
   },
   methods: {
+    cancel() {
+      this.menuDialogVis = false;
+      this.checkStrictly = true
+    },
     //树形菜单
     selectMenu(row) {
       this.role = row.soleKey

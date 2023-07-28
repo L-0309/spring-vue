@@ -39,20 +39,22 @@
     <el-table-column prop="time" label="发布时间"></el-table-column>
     <el-table-column label="操作">
       <template v-slot="scope">
-        <el-button type="primary" @click="handleEdit(scope.row)" size="mini">
-          编辑<i class="el-icon-edit-outline"></i>
-        </el-button>
-        <el-popconfirm
-            class="ml-5"
-            confirm-button-text='确定'
-            cancel-button-text='取消'
-            icon="el-icon-info"
-            icon-color="red"
-            title="确定删除吗？"
-            @confirm="handleDelete(scope.row)"
-        >
-          <el-button slot="reference" type="danger">删除 <i class="el-icon-remove-outline"></i></el-button>
-        </el-popconfirm>
+        <template v-if="user.role === 'ROLE_ADMIN' || user.id === scope.row.userId">
+          <el-button type="primary" @click="handleEdit(scope.row)" size="mini">
+            编辑<i class="el-icon-edit-outline"></i>
+          </el-button>
+          <el-popconfirm
+              class="ml-5"
+              confirm-button-text='确定'
+              cancel-button-text='取消'
+              icon="el-icon-info"
+              icon-color="red"
+              title="确定删除吗？"
+              @confirm="handleDelete(scope.row)"
+          >
+            <el-button slot="reference" type="danger">删除 <i class="el-icon-remove-outline"></i></el-button>
+          </el-popconfirm>
+        </template>
       </template>
     </el-table-column>
   </el-table>
@@ -135,6 +137,7 @@ export default {
   name: "Picture",
   data() {
     return {
+      user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem("user")) : {},
       pickerOptions: {
         shortcuts: [{
           text: '今天',

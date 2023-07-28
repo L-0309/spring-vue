@@ -2,7 +2,7 @@
   <div>
     <!--  头部-->
     <div style="display: flex;height: 60px; line-height: 60px;border-bottom: 1px solid #ccc">
-      <div style="width: 200px; text-align: center;font-size: 10px;color: #666">欢迎来到vue+element系统</div>
+      <div style="width: 200px; text-align: center;font-size: 10px;color: rgba(83,148,255,0.72)">欢迎来到vue+element系统</div>
       <div style="flex: 1;background-color: rgba(101,70,70,0.34)">
         <!--      导航菜单-->
         <ul style="margin-top: 10px;margin-left: 50px" class="nav nav-tabs">

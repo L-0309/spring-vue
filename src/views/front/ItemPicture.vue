@@ -1,7 +1,6 @@
 <template>
   <div style="margin: 10px 0">
     <h1> 所有图片 </h1>
-    <h3 style="color: red">因为此处图片是后添加的，此处的字段和库中的字段发生了冲突，此处仅显示两张</h3>
     <vue-picture-swipe :items="items"></vue-picture-swipe>
 
 <!--    <el-row :gutter="5">-->

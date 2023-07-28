@@ -21,6 +21,7 @@
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="personal">个人信息</el-dropdown-item>
           <el-dropdown-item command="password">修改密码</el-dropdown-item>
+          <el-dropdown-item command="switchUser">切换用户</el-dropdown-item>
           <el-dropdown-item command="quit">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -71,6 +72,13 @@ export default {
       if (command === 'password') {
         this.passwordEdit()
       }
+      if (command === 'switchUser') {
+        this.switchUser()
+      }
+    },
+    switchUser() {
+      localStorage.removeItem('user')
+      this.$router.push('/login')
     },
     quit () {
       this.$store.commit('resetUser')
