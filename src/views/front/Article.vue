@@ -8,6 +8,7 @@
         <el-option v-for="item in options" :key="item.id" :label="item.nickname" :value="item.id"></el-option>
       </el-select>
       <el-button type="primary" class="ml-5" icon="el-icon-search" @click="search">搜索</el-button>
+      <el-button type="info" class="ml-5" icon="el-icon-document" @click="handleAddArticle">写文章</el-button>
     </div>
     <el-card>
       <div v-for="item in article" :key="item.id" style="margin: 10px 0; padding: 20px; color: #666; border-bottom: 1px dashed #ccc">
@@ -29,11 +30,27 @@
           :total="total">
       </el-pagination>
     </div>
+
+    <el-dialog title="文章信息" :visible.sync="dialogFormVisible" width="60%">
+      <el-form label-width="90px">
+        <el-form-item label="标题：">
+          <el-input v-model="form.name"  autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="内容：">
+          <mavon-editor ref="md" v-model="form.content" :ishljs="true" @imgAdd="imgAdd"></mavon-editor>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button icon="el-icon-close" type="info" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button icon="el-icon-circle-check" type="primary" @click="save">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import request from "@/utils/request";
+import axios from "axios";
 
 export default {
   name: "Picture",
@@ -47,10 +64,48 @@ export default {
       name: '',
       options: [],
       userId: '',
+      dialogFormVisible: false,
+      server: this.serverIp,
+      form: {},
       user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem("user")) : {},
     }
   },
   methods: {
+    handleAddArticle() {
+      //添加文章
+      if (this.user.id) {
+        this.form = {}
+        this.dialogFormVisible = true
+      }else {
+        this.$message.info("登录后可写文章")
+      }
+    },
+    save() {
+      this.form.userId = this.user.id
+      request.post('article/save', this.form).then(
+          res => {
+            if (res.code === '200') {
+              this.$message.success('发布成功')
+              this.dialogFormVisible = false
+              this.load()
+            }
+          }
+      )
+    },
+    imgAdd(pos, $file) {
+      // 绑定@imgAdd event
+      // 第一步.将图片上传到服务器.
+      let formdata = new FormData();
+      formdata.append('file', $file);
+      axios ({
+        url: this.server,
+        method: 'post',
+        data: formdata,
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }).then((url) => {
+        this.$refs.md.$img2Url(pos, url.data.data);
+      })
+    },
     getUserId(userId) {
       this.userId = userId;
       this.load()

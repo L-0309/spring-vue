@@ -2,6 +2,10 @@
   <div>
     <h2>文章详情 </h2>
     <span style="font-size: 18px; color: rgba(215,40,231,0.87)">标题:{{article.name}}</span>
+    <div style="display: inline;margin-left: 10px" v-if="user.id !== article.userId">
+      <span v-if="onlyFlag"><el-button type="danger" @click="attention">关注</el-button></span>
+      <span v-else class="ml-5"><el-button type="danger" @click="backAttention">取消关注</el-button></span>
+    </div>
     <div style="float: right;width: 400px;text-align: center;height: 40px;line-height: 40px">
       <span><el-button type="info" @click="back">返回</el-button></span>
       <span style="font-size: 12px;margin: 10px 20px;color: rgba(245,8,34,0.62);"> <i class="el-icon-user"></i> 发布人：{{article.userNickname}}</span>
@@ -108,9 +112,46 @@ export default {
       id: this.$route.query.id,
       user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem("user")) : {},
       dialogFormVisible: false,
+      attentionFrom: {},
+      onlyFlag: Boolean,
     }
   },
   methods:{
+    backAttention() {
+      this.attentionFrom.userId = this.user.id
+      this.attentionFrom.articleId = this.article.id
+      request.get('attention/del',{
+        params: {
+          userId: this.user.id,
+          articleId: this.article.id
+        }
+      }).then(
+          res => {
+            if (res.code === '200') {
+              this.$message.success('取消成功')
+              this.loadAttention()
+            }
+            if (res.code === '500') {
+              this.$message.error(res.msg)
+              this.loadAttention()
+            }
+          }
+      )
+    },
+    attention() {
+      this.attentionFrom.userId = this.user.id
+      this.attentionFrom.articleId = this.article.id
+      request.post('attention/save',this.attentionFrom).then(
+          res => {
+            if (res.code === '200') {
+              this.$message.success('关注成功')
+              this.loadAttention()
+            }else {
+              this.$message.error('抱歉，关注失败')
+            }
+          }
+      )
+    },
     handleReply(pid) {
       this.commentFrom = { pid: pid}
       this.dialogFormVisible = true
@@ -159,7 +200,20 @@ export default {
             this.article = res.data
           }
       )
-
+    },
+    loadAttention(){
+      setTimeout(() => {
+        request.get('attention/findAttention',{
+          params: {
+            userId: this.user.id,
+            articleId: this.article.id
+          }
+        }).then(
+            res => {
+              this.onlyFlag = res.data
+            }
+        )
+      },100)
     },
     loadComment() {
       request.get('comment/tree/' + this.id).then(
@@ -172,6 +226,7 @@ export default {
   mounted() {
     this.load()
     this.loadComment()
+    this.loadAttention()
   }
 }
 </script>

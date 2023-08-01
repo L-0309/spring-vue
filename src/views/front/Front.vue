@@ -7,6 +7,9 @@
         <!--      导航菜单-->
         <ul style="margin-top: 10px;margin-left: 50px" class="nav nav-tabs">
           <li class="item">
+            <router-link class="list-group-item" active-class="active" to="/front/home">主页</router-link>
+          </li>
+          <li class="item">
             <router-link class="list-group-item" active-class="active" to="/front/itemPicture">查看图片</router-link>
           </li>
           <li class="item">
